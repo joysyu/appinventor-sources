@@ -64,7 +64,7 @@ function runClassifier(video, net) {
   canvas.height = videoHeight;
 
   async function classifyFrame() {
-    const result = await net.estimateFaces(video);
+    const predictions = await net.estimateFaces(video);
 
     ctx.clearRect(0, 0, videoWidth, videoHeight);
 
@@ -76,7 +76,79 @@ function runClassifier(video, net) {
 
     const dataURL = canvas.toDataURL();
     FaceExtension.reportImage(dataURL);
-    FaceExtension.reportResult(JSON.stringify(result));
+    // if predictions.length > 0 {
+    // FaceExtension.reportResult(JSON.stringify(predictions));
+    // }
+    // if predictions.length > 0 {
+      // for (let i = 0; i < predictions.length; i++) {
+      //   const keypoints = predictions[i].scaledMesh;
+
+      //   // Log facial keypoints.
+      //   for (let i = 0; i < keypoints.length; i++) {
+      //     const [x, y, z] = keypoints[i];
+
+      //     console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
+      //   }
+      // }
+      // FaceExtension.reportResult(JSON.stringify(predictions[0].scaledMesh));
+    // }
+
+    if (predictions.length > 0) {
+      FaceExtension.reportLengthGreaterThanZero();
+    /*
+    `predictions` is an array of objects describing each detected face, for example:
+
+    [
+      {
+        faceInViewConfidence: 1, // The probability of a face being present.
+        boundingBox: { // The bounding box surrounding the face.
+          topLeft: [232.28, 145.26],
+          bottomRight: [449.75, 308.36],
+        },
+        mesh: [ // The 3D coordinates of each facial landmark.
+          [92.07, 119.49, -17.54],
+          [91.97, 102.52, -30.54],
+          ...
+        ],
+        scaledMesh: [ // The 3D coordinates of each facial landmark, normalized.
+          [322.32, 297.58, -17.54],
+          [322.18, 263.95, -30.54]
+        ],
+        annotations: { // Semantic groupings of the `scaledMesh` coordinates.
+          silhouette: [
+            [326.19, 124.72, -3.82],
+            [351.06, 126.30, -3.00],
+            ...
+          ],
+          ...
+        }
+      }
+    ]
+    */
+
+      // for (let i = 0; i < predictions.length; i++) {
+      const leftCheek = predictions[0].annotations.leftCheek[0];
+      const rightCheek = predictions[0].annotations.rightCheek[0];
+      const forehead = predictions[0].scaledMesh[10];
+      const chin = predictions[0].scaledMesh[152];
+      const newObj = {"leftCheek" : {x: leftCheek[0], y: leftCheek[1], z: leftCheek[2]},
+                      "rightCheek" : {x : rightCheek[0], y: rightCheek[1], z: rightCheek[2]},
+                      "forehead": {x : forehead[0], y: forehead[1], z: forehead[2]},
+                      "chin": {x : chin[0], y: chin[1], z: chin[2]}};
+      FaceExtension.reportResult(JSON.stringify(newObj));
+      // const [x, y, z] = keypoints[10];
+      // FaceExtension.reportResult(JSON.stringify([x, y, z]));
+
+      // Log facial keypoints.
+      // for (let i = 0; i < keypoints.length; i++) {
+      //   const [x, y, z] = keypoints[i];
+
+      //   console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
+      // }
+    // }
+  }
+
+
 
     if (!stop) requestAnimationFrame(classifyFrame);
   }
@@ -143,3 +215,31 @@ loadModel().then(model => {
   net = model;
   FaceExtension.ready();
 });
+
+    // [
+    //   {
+    //     faceInViewConfidence: 1, // The probability of a face being present.
+    //     boundingBox: { // The bounding box surrounding the face.
+    //       topLeft: [232.28, 145.26],
+    //       bottomRight: [449.75, 308.36],
+    //     },
+    //     mesh: [ // The 3D coordinates of each facial landmark.
+    //       [92.07, 119.49, -17.54],
+    //       [91.97, 102.52, -30.54],
+    //       ...
+    //     ],
+    //     scaledMesh: [ // The 3D coordinates of each facial landmark, normalized.
+    //       [322.32, 297.58, -17.54],
+    //       [322.18, 263.95, -30.54]
+    //     ],
+    //     annotations: { // Semantic groupings of the `scaledMesh` coordinates.
+    //       silhouette: [
+    //         [326.19, 124.72, -3.82],
+    //         [351.06, 126.30, -3.00],
+    //         ...
+    //       ],
+    //       ...
+    //     }
+    //   }
+    // ]
+    // */
