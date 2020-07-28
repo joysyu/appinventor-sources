@@ -92,6 +92,7 @@ public class FaceExtension extends AndroidNonvisibleComponent
     keyPoints.put("leftCheek", YailList.makeEmptyList());
     keyPoints.put("rightCheek", YailList.makeEmptyList());
     keyPoints.put("chin", YailList.makeEmptyList());
+    keyPoints.put("leftEyeInnerCorner", YailList.makeEmptyList());
 
     Log.d(LOG_TAG, "Created FaceExtension extension");
   }
@@ -203,6 +204,11 @@ public class FaceExtension extends AndroidNonvisibleComponent
  @SimpleProperty(description = "Position of right cheek")
   public YailList RightCheek() {
     return keyPoints.get("rightCheek");
+  }
+
+  @SimpleProperty(description = "Position of left eye inner corner")
+  public YailList LeftEyeInnerCorner() {
+    return keyPoints.get("leftEyeInnerCorner");
   }
 
   @SimpleProperty(description = "Background Image.")
@@ -362,12 +368,17 @@ public class FaceExtension extends AndroidNonvisibleComponent
         YailList rightCheekList = YailList.makeList(new Double[]{rightCheek.getDouble("x"), rightCheek.getDouble("y"), rightCheek.getDouble("z")});
         keyPoints.put("rightCheek", rightCheekList);
 
+        JSONObject leftEyeInnerCorner = res.getJSONObject("leftEyeInnerCorner");
+        YailList leftEyeInnerCornerList = YailList.makeList(new Double[]{leftEyeInnerCorner.getDouble("x"), leftEyeInnerCorner.getDouble("y"), leftEyeInnerCorner.getDouble("z")});
+        keyPoints.put("leftEyeInnerCorner", leftEyeInnerCornerList);
+  
         form.runOnUiThread(new Runnable() {
           @Override
           public void run() {
             FaceUpdated();
           }
         });
+
       } catch (final JSONException e) {
         form.runOnUiThread(new Runnable() {
           @Override

@@ -130,10 +130,14 @@ function runClassifier(video, net) {
       const rightCheek = predictions[0].annotations.rightCheek[0];
       const forehead = predictions[0].scaledMesh[10];
       const chin = predictions[0].scaledMesh[152];
+      const leftEyeInnerCorner = predictions[0].scaledMesh[133];
+
       const newObj = {"leftCheek" : {x: leftCheek[0], y: leftCheek[1], z: leftCheek[2]},
                       "rightCheek" : {x : rightCheek[0], y: rightCheek[1], z: rightCheek[2]},
                       "forehead": {x : forehead[0], y: forehead[1], z: forehead[2]},
-                      "chin": {x : chin[0], y: chin[1], z: chin[2]}};
+                      "chin": {x : chin[0], y: chin[1], z: chin[2]},
+                      "leftEyeInnerCorner": {x : leftEyeInnerCorner[0], y: leftEyeInnerCorner[1], z: leftEyeInnerCorner[2]}
+                      };
       FaceExtension.reportResult(JSON.stringify(newObj));
       // const [x, y, z] = keypoints[10];
       // FaceExtension.reportResult(JSON.stringify([x, y, z]));
