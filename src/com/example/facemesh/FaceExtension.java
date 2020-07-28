@@ -93,6 +93,13 @@ public class FaceExtension extends AndroidNonvisibleComponent
     keyPoints.put("rightCheek", YailList.makeEmptyList());
     keyPoints.put("chin", YailList.makeEmptyList());
     keyPoints.put("leftEyeInnerCorner", YailList.makeEmptyList());
+    keyPoints.put("rightEyeInnerCorner", YailList.makeEmptyList());
+    keyPoints.put("mouthTop", YailList.makeEmptyList());
+    keyPoints.put("mouthBottom", YailList.makeEmptyList());
+    keyPoints.put("leftEyeTop", YailList.makeEmptyList());
+    keyPoints.put("leftEyeBottom", YailList.makeEmptyList());
+    keyPoints.put("rightEyeTop", YailList.makeEmptyList());
+    keyPoints.put("rightEyeBottom", YailList.makeEmptyList());
 
     Log.d(LOG_TAG, "Created FaceExtension extension");
   }
@@ -209,6 +216,41 @@ public class FaceExtension extends AndroidNonvisibleComponent
   @SimpleProperty(description = "Position of left eye inner corner")
   public YailList LeftEyeInnerCorner() {
     return keyPoints.get("leftEyeInnerCorner");
+  }
+
+
+  @SimpleProperty(description = "Position of right eye inner corner")
+  public YailList RightEyeInnerCorner() {
+    return keyPoints.get("rightEyeInnerCorner");
+  }
+
+
+  @SimpleProperty(description = "Position of mouth top")
+  public YailList MouthTop() {
+    return keyPoints.get("mouthTop");
+  }
+
+
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList MouthBottom() {
+    return keyPoints.get("mouthBottom");
+  }
+
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList LeftEyeTop() {
+    return keyPoints.get("leftEyeTop");
+  }
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList LeftEyeBotton() {
+    return keyPoints.get("leftEyeBottom");
+  }
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList RightEyeTop() {
+    return keyPoints.get("rightEyeTop");
+  }
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList RightEyeBottom() {
+    return keyPoints.get("rightEyeBottom");
   }
 
   @SimpleProperty(description = "Background Image.")
@@ -371,7 +413,36 @@ public class FaceExtension extends AndroidNonvisibleComponent
         JSONObject leftEyeInnerCorner = res.getJSONObject("leftEyeInnerCorner");
         YailList leftEyeInnerCornerList = YailList.makeList(new Double[]{leftEyeInnerCorner.getDouble("x"), leftEyeInnerCorner.getDouble("y"), leftEyeInnerCorner.getDouble("z")});
         keyPoints.put("leftEyeInnerCorner", leftEyeInnerCornerList);
-  
+
+
+        JSONObject rightEyeInnerCorner = res.getJSONObject("rightEyeInnerCorner");
+        YailList rightEyeInnerCornerList = YailList.makeList(new Double[]{rightEyeInnerCorner.getDouble("x"), rightEyeInnerCorner.getDouble("y"), rightEyeInnerCorner.getDouble("z")});
+        keyPoints.put("rightEyeInnerCorner", rightEyeInnerCornerList);
+
+        JSONObject mouthTop = res.getJSONObject("mouthTop");
+        YailList mouthTopList = YailList.makeList(new Double[]{mouthTop.getDouble("x"), mouthTop.getDouble("y"), mouthTop.getDouble("z")});
+        keyPoints.put("mouthTop", mouthTopList);
+
+        JSONObject mouthBottom = res.getJSONObject("mouthBottom");
+        YailList mouthBottomList = YailList.makeList(new Double[]{mouthBottom.getDouble("x"), mouthBottom.getDouble("y"), mouthBottom.getDouble("z")});
+        keyPoints.put("mouthBottom", mouthBottomList);
+
+        JSONObject leftEyeTop = res.getJSONObject("leftEyeTop");
+        YailList leftEyeTopList = YailList.makeList(new Double[]{leftEyeTop.getDouble("x"), leftEyeTop.getDouble("y"), leftEyeTop.getDouble("z")});
+        keyPoints.put("leftEyeTop", leftEyeTopList);
+
+        JSONObject leftEyeBottom = res.getJSONObject("leftEyeBottom");
+        YailList leftEyeBottomList = YailList.makeList(new Double[]{leftEyeBottom.getDouble("x"), leftEyeBottom.getDouble("y"), leftEyeBottom.getDouble("z")});
+        keyPoints.put("leftEyeBottom", leftEyeBottomList);
+
+        JSONObject rightEyeTop = res.getJSONObject("rightEyeTop");
+        YailList rightEyeTopList = YailList.makeList(new Double[]{rightEyeTop.getDouble("x"), rightEyeTop.getDouble("y"), rightEyeTop.getDouble("z")});
+        keyPoints.put("rightEyeTop", rightEyeTopList);
+
+        JSONObject rightEyeBottom = res.getJSONObject("rightEyeBottom");
+        YailList rightEyeBottomList = YailList.makeList(new Double[]{rightEyeBottom.getDouble("x"), rightEyeBottom.getDouble("y"), rightEyeBottom.getDouble("z")});
+        keyPoints.put("rightEyeBottom", rightEyeBottomList);
+
         form.runOnUiThread(new Runnable() {
           @Override
           public void run() {

@@ -131,13 +131,31 @@ function runClassifier(video, net) {
       const forehead = predictions[0].scaledMesh[10];
       const chin = predictions[0].scaledMesh[152];
       const leftEyeInnerCorner = predictions[0].scaledMesh[133];
+      const rightEyeInnerCorner = predictions[0].scaledMesh[362];
+      const mouthTop = predictions[0].scaledMesh[0];
+      const mouthBottom = predictions[0].scaledMesh[17];
+
+      const leftEyeTop = predictions[0].scaledMesh[159];
+      const leftEyeBottom = predictions[0].scaledMesh[145];
+
+      const rightEyeTop = predictions[0].scaledMesh[386];
+      const rightEyeBottom = predictions[0].scaledMesh[374];
+
 
       const newObj = {"leftCheek" : {x: leftCheek[0], y: leftCheek[1], z: leftCheek[2]},
                       "rightCheek" : {x : rightCheek[0], y: rightCheek[1], z: rightCheek[2]},
                       "forehead": {x : forehead[0], y: forehead[1], z: forehead[2]},
                       "chin": {x : chin[0], y: chin[1], z: chin[2]},
-                      "leftEyeInnerCorner": {x : leftEyeInnerCorner[0], y: leftEyeInnerCorner[1], z: leftEyeInnerCorner[2]}
+                      "leftEyeInnerCorner": {x : leftEyeInnerCorner[0], y: leftEyeInnerCorner[1], z: leftEyeInnerCorner[2]},
+                      "rightEyeInnerCorner": {x : rightEyeInnerCorner[0], y: rightEyeInnerCorner[1], z: rightEyeInnerCorner[2]},
+                      "mouthTop": {x : mouthTop[0], y: mouthTop[1], z: mouthTop[2]},
+                      "mouthBottom": {x : mouthBottom[0], y: mouthBottom[1], z: mouthBottom[2]},
+                      "leftEyeTop": {x : leftEyeTop[0], y: leftEyeTop[1], z: leftEyeTop[2]},
+                      "leftEyeBottom": {x : leftEyeBottom[0], y: leftEyeBottom[1], z: leftEyeBottom[2]},
+                      "rightEyeTop": {x : rightEyeTop[0], y: rightEyeTop[1], z: rightEyeTop[2]},
+                      "rightEyeBottom": {x : rightEyeBottom[0], y: rightEyeBottom[1], z: rightEyeBottom[2]}
                       };
+
       FaceExtension.reportResult(JSON.stringify(newObj));
       // const [x, y, z] = keypoints[10];
       // FaceExtension.reportResult(JSON.stringify([x, y, z]));
