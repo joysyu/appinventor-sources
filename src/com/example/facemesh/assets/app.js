@@ -64,7 +64,7 @@ function runClassifier(video, net) {
   canvas.height = videoHeight;
 
   async function classifyFrame() {
-    const predictions = await net.estimateFaces(video);
+    const predictions = await net.estimateFaces(video, false, forwardCamera);
 
     ctx.clearRect(0, 0, videoWidth, videoHeight);
 
@@ -94,7 +94,6 @@ function runClassifier(video, net) {
     // }
 
     if (predictions.length > 0) {
-      FaceExtension.reportLengthGreaterThanZero();
     /*
     `predictions` is an array of objects describing each detected face, for example:
 

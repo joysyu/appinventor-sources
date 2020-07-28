@@ -73,6 +73,7 @@ public class FaceExtension extends AndroidNonvisibleComponent
   private static final String FRONT_CAMERA = "Front";
 
   private WebView webview = null;
+  private final Map<String, YailList> keyPoints = new ConcurrentHashMap<>();
   private String cameraMode = FRONT_CAMERA;
   private boolean initialized = false;
   private boolean enabled = true;
@@ -87,6 +88,11 @@ public class FaceExtension extends AndroidNonvisibleComponent
     super(form);
     requestHardwareAcceleration(form);
     WebView.setWebContentsDebuggingEnabled(true);
+    keyPoints.put("forehead", YailList.makeEmptyList());
+    keyPoints.put("leftCheek", YailList.makeEmptyList());
+    keyPoints.put("rightCheek", YailList.makeEmptyList());
+    keyPoints.put("chin", YailList.makeEmptyList());
+
     Log.d(LOG_TAG, "Created FaceExtension extension");
   }
 
@@ -179,7 +185,27 @@ public class FaceExtension extends AndroidNonvisibleComponent
     }
   }
 
-  @SimpleProperty(description = "BackGround Image.")
+  @SimpleProperty(description = "Position of forehead")
+  public YailList Forehead() {
+    return keyPoints.get("forehead");
+  }
+
+ @SimpleProperty(description = "Position of chin")
+  public YailList Chin() {
+    return keyPoints.get("chin");
+  }
+
+ @SimpleProperty(description = "Position of left cheek")
+  public YailList LeftCheek() {
+    return keyPoints.get("leftCheek");
+  }
+
+ @SimpleProperty(description = "Position of right cheek")
+  public YailList RightCheek() {
+    return keyPoints.get("rightCheek");
+  }
+
+  @SimpleProperty(description = "Background Image.")
   public String BackgroundImage() {
     return BackgroundImage;
   }
@@ -213,8 +239,8 @@ public class FaceExtension extends AndroidNonvisibleComponent
 
   @SuppressWarnings("squid:S00100")
   @SimpleEvent(description = "Event indicating that model successfully got a result.")
-  public void GotResult(Object result) {
-    EventDispatcher.dispatchEvent(this, "GotResult", result);
+  public void FaceUpdated() {
+    EventDispatcher.dispatchEvent(this, "FaceUpdated");
   }
 
   @SuppressWarnings("squid:S00100")
@@ -314,15 +340,32 @@ public class FaceExtension extends AndroidNonvisibleComponent
         });
       }
     }
-    
-    @JavascriptInterface
+
+    @JavascriptInterface 
     public void reportResult(final String result) {
       try {
-        final Object parsedResult = JsonUtil.getObjectFromJson(result, true);
+        // final Object parsedResult = JsonUtil.getObjectFromJson(result, true);
+        JSONObject res = new JSONObject(result);
+        JSONObject forehead = res.getJSONObject("forehead");
+        YailList foreHeadList = YailList.makeList(new Double[]{forehead.getDouble("x"), forehead.getDouble("y"), forehead.getDouble("z")});
+        keyPoints.put("forehead", foreHeadList);
+
+        JSONObject chin = res.getJSONObject("chin");
+        YailList chinList = YailList.makeList(new Double[]{chin.getDouble("x"), chin.getDouble("y"), chin.getDouble("z")});
+        keyPoints.put("chin", chinList); 
+
+        JSONObject leftCheek = res.getJSONObject("leftCheek");
+        YailList leftCheekList = YailList.makeList(new Double[]{leftCheek.getDouble("x"), leftCheek.getDouble("y"), leftCheek.getDouble("z")});
+        keyPoints.put("leftCheek", leftCheekList);
+
+        JSONObject rightCheek = res.getJSONObject("rightCheek");
+        YailList rightCheekList = YailList.makeList(new Double[]{rightCheek.getDouble("x"), rightCheek.getDouble("y"), rightCheek.getDouble("z")});
+        keyPoints.put("rightCheek", rightCheekList);
+
         form.runOnUiThread(new Runnable() {
           @Override
           public void run() {
-            GotResult(parsedResult);
+            FaceUpdated();
           }
         });
       } catch (final JSONException e) {
