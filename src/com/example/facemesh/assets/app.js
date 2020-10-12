@@ -8,12 +8,8 @@ console.log("FaceExtension using tfjs-converter version " + tf.version_converter
 
 const ERROR_WEBVIEW_NO_MEDIA = 400;
 const ERROR_MODEL_LOAD = 401;
-const videoWidth = 300;
-const videoHeight = 250;
-const defaultQuantBytes = 2;
-const defaultMobileNetMultiplier = 0.50;
-const defaultMobileNetStride = 16;
-const defaultMobileNetInputResolution = 257;
+var videoWidth = 300;
+var videoHeight = 250;
 
 const ERRORS = {
   400: "WebView does not support navigator.mediaDevices",
@@ -31,8 +27,8 @@ async function setupCamera() {
   }
 
   const video = document.getElementById('video');
-  video.width = videoWidth;
-  video.height = videoHeight;
+  video.width = 0;
+  video.height = 0;
 
   video.srcObject = await navigator.mediaDevices.getUserMedia({
     'audio': false,
@@ -64,7 +60,7 @@ function runClassifier(video, net) {
   canvas.height = videoHeight;
 
   async function classifyFrame() {
-    const predictions = await net.estimateFaces(video, false, forwardCamera);
+    const predictions = await net.estimateFaces(video, false, true);
 
     ctx.clearRect(0, 0, videoWidth, videoHeight);
 
@@ -126,8 +122,8 @@ function runClassifier(video, net) {
     */
 
       // for (let i = 0; i < predictions.length; i++) {
-      const leftCheek = predictions[0].annotations.leftCheek[0];
-      const rightCheek = predictions[0].annotations.rightCheek[0];
+      const leftCheek = predictions[0].scaledMesh[234];
+      const rightCheek = predictions[0].scaledMesh[454];
       const forehead = predictions[0].scaledMesh[10];
       const chin = predictions[0].scaledMesh[152];
       const leftEyeInnerCorner = predictions[0].scaledMesh[133];
@@ -142,18 +138,18 @@ function runClassifier(video, net) {
       const rightEyeBottom = predictions[0].scaledMesh[374];
 
 
-      const newObj = {"leftCheek" : {x: leftCheek[0], y: leftCheek[1], z: leftCheek[2]},
-                      "rightCheek" : {x : rightCheek[0], y: rightCheek[1], z: rightCheek[2]},
-                      "forehead": {x : forehead[0], y: forehead[1], z: forehead[2]},
-                      "chin": {x : chin[0], y: chin[1], z: chin[2]},
-                      "leftEyeInnerCorner": {x : leftEyeInnerCorner[0], y: leftEyeInnerCorner[1], z: leftEyeInnerCorner[2]},
-                      "rightEyeInnerCorner": {x : rightEyeInnerCorner[0], y: rightEyeInnerCorner[1], z: rightEyeInnerCorner[2]},
-                      "mouthTop": {x : mouthTop[0], y: mouthTop[1], z: mouthTop[2]},
-                      "mouthBottom": {x : mouthBottom[0], y: mouthBottom[1], z: mouthBottom[2]},
-                      "leftEyeTop": {x : leftEyeTop[0], y: leftEyeTop[1], z: leftEyeTop[2]},
-                      "leftEyeBottom": {x : leftEyeBottom[0], y: leftEyeBottom[1], z: leftEyeBottom[2]},
-                      "rightEyeTop": {x : rightEyeTop[0], y: rightEyeTop[1], z: rightEyeTop[2]},
-                      "rightEyeBottom": {x : rightEyeBottom[0], y: rightEyeBottom[1], z: rightEyeBottom[2]}
+      const newObj = {"leftCheek" : {x: leftCheek[0] + 480, y: leftCheek[1], z: leftCheek[2]},
+                      "rightCheek" : {x : rightCheek[0] + 480, y: rightCheek[1], z: rightCheek[2]},
+                      "forehead": {x : forehead[0] + 480, y: forehead[1], z: forehead[2]},
+                      "chin": {x : chin[0] + 480, y: chin[1], z: chin[2]},
+                      "leftEyeInnerCorner": {x : leftEyeInnerCorner[0]+ 480, y: leftEyeInnerCorner[1], z: leftEyeInnerCorner[2]},
+                      "rightEyeInnerCorner": {x : rightEyeInnerCorner[0]+ 480, y: rightEyeInnerCorner[1], z: rightEyeInnerCorner[2]},
+                      "mouthTop": {x : mouthTop[0]+ 480, y: mouthTop[1], z: mouthTop[2]},
+                      "mouthBottom": {x : mouthBottom[0]+ 480, y: mouthBottom[1], z: mouthBottom[2]},
+                      "leftEyeTop": {x : leftEyeTop[0]+ 480, y: leftEyeTop[1], z: leftEyeTop[2]},
+                      "leftEyeBottom": {x : leftEyeBottom[0]+ 480, y: leftEyeBottom[1], z: leftEyeBottom[2]},
+                      "rightEyeTop": {x : rightEyeTop[0]+ 480, y: rightEyeTop[1], z: rightEyeTop[2]},
+                      "rightEyeBottom": {x : rightEyeBottom[0]+ 480, y: rightEyeBottom[1], z: rightEyeBottom[2]}
                       };
 
       FaceExtension.reportResult(JSON.stringify(newObj));
@@ -179,7 +175,9 @@ function runClassifier(video, net) {
 
 async function loadModel() {
   try {
-    return facemesh.load();
+    return facemesh.load({
+      maxFaces: 1
+    });
   } catch (e) {
     FaceExtension.error(ERROR_MODEL_LOAD,
       ERRORS[ERROR_MODEL_LOAD]);
