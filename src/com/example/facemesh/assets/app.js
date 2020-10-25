@@ -10,8 +10,7 @@ const ERROR_WEBVIEW_NO_MEDIA = 400;
 const ERROR_MODEL_LOAD = 401;
 var videoWidth = 300;
 var videoHeight = 250;
-var widthFromJava = 0;
-var heightFromJava = 0;
+var showMesh = "0";
 
 const ERRORS = {
   400: "WebView does not support navigator.mediaDevices",
@@ -53,14 +52,6 @@ async function loadVideo() {
 }
 
 let stop = false;
-
-function setVideoWidth(width) {
-  widthFromJava = width;
-}
-
-function setVideoHeight(height) {
-  heightFromJava = height;
-}
 
 function runClassifier(video, net) {
   const canvas = document.getElementById('output');
@@ -146,41 +137,18 @@ function runClassifier(video, net) {
 
       FaceExtension.reportResult(JSON.stringify(newObj));
 
-      // var xSmallest = 555;
-      // var ySmallest = 555;
-      // var xLargest = -555;
-      // var yLargest = -555;
-
-      for (let i = 0; i < predictions[0].scaledMesh.length; i++) {
-        ctx.font = "5pt Calibri";
-        // works for 300 by 300 perfectly
-        // var currX = (predictions[0].scaledMesh[i][0] + 485.0) / 480.0 * widthFromJava;
-        // var currY = (predictions[0].scaledMesh[i][1] - 20.0) / 620.0 * heightFromJava;
-
-
-        var currX = (predictions[0].scaledMesh[i][0] + 470.0) / 480.0 * videoWidth;
-        var currY = (predictions[0].scaledMesh[i][1] - 5.0) / 620.0 * videoHeight;
-        ctx.fillText(i.toString(), currX, currY);
-        // if (predictions[0].scaledMesh[i][0] < xSmallest){
-        //   xSmallest = predictions[0].scaledMesh[i][0];
-        // } else if (predictions[0].scaledMesh[i][0] > xLargest) {
-        //   xLargest = predictions[0].scaledMesh[i][0]
-        // }
-        // if (predictions[0].scaledMesh[i][1] < ySmallest){
-        //   ySmallest = predictions[0].scaledMesh[i][1];
-        // } else if (predictions[0].scaledMesh[i][1] > yLargest) {
-        //   yLargest = predictions[0].scaledMesh[i][1]
-        // }
-
-        ctx.save();
+      if (showMesh == "1") {
+        for (let i = 0; i < predictions[0].scaledMesh.length; i++) {
+          ctx.font = "3pt Calibri";
+          var currX = (predictions[0].scaledMesh[i][0] + 470.0) / 480.0 * videoWidth;
+          var currY = (predictions[0].scaledMesh[i][1] - 7.0) / 620.0 * videoHeight;
+          ctx.fillText(i.toString(), currX, currY);
+          ctx.save();
+        }
       }
-
-      ctx.fillText(widthFromJava, 10, 10);
-      ctx.fillText(heightFromJava, 10, 20);
-      // ctx.fillText("xLargest: " + xLargest.toString(), 10, 30);
-      // ctx.fillText("yLargest: " + yLargest.toString(), 10, 40);
-      // ctx.save();
-
+      // ctx.fillText(widthFromJava, 10, 10);
+      // ctx.fillText(heightFromJava, 10, 20);
+      
     }
 
     const dataURL = canvas.toDataURL();
@@ -220,6 +188,14 @@ async function runModel() {
 
   running = true;
   return runClassifier(video, net);
+}
+
+function turnMeshOn() {
+  showMesh = "1";
+}
+
+function turnMeshOff() {
+  showMesh = "0";
 }
 
 async function startVideo() {

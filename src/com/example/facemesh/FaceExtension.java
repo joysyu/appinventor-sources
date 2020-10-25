@@ -77,6 +77,7 @@ public class FaceExtension extends AndroidNonvisibleComponent
   private String cameraMode = FRONT_CAMERA;
   private boolean initialized = false;
   private boolean enabled = true;
+  private boolean showMesh = false;
   private String BackgroundImage = "";
   private int width = 350;
   private int height = 200; 
@@ -204,9 +205,6 @@ public class FaceExtension extends AndroidNonvisibleComponent
   @SimpleProperty
   public void Width(int w) {
     width = w;
-    // if (initialized) {
-    //   webview.evaluateJavascript("widthFromJava =" + w + ";");
-    // }
   }
 
   @SimpleProperty
@@ -218,9 +216,6 @@ public class FaceExtension extends AndroidNonvisibleComponent
   @SimpleProperty
   public void Height(int h) {
     height = h;
-    // if (initialized) {
-    //   webview.evaluateJavascript("heightFromJava =" + h + ";");
-    // }
   }
 
   @SimpleProperty
@@ -325,9 +320,27 @@ public class FaceExtension extends AndroidNonvisibleComponent
     this.enabled = enabled;
     if (initialized) {
       assertWebView("Enabled");
-      webview.evaluateJavascript("heightFromJava =" + height + ";", null);
-      webview.evaluateJavascript("widthFromJava =" + width + ";", null);
+      // webview.evaluateJavascript("heightFromJava =" + height + ";", null);
+      // webview.evaluateJavascript("widthFromJava =" + width + ";", null);
+      if (showMesh) {
+        webview.evaluateJavascript("turnMeshOn();", null);
+      } else {
+        webview.evaluateJavascript("turnMeshOff();", null);
+      }
       webview.evaluateJavascript(enabled ? "startVideo();" : "stopVideo();", null);
+    }
+  }
+
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "False")
+  @SimpleProperty
+  public void ShowMesh(boolean show) {
+    this.showMesh = show;
+    if (initialized) {
+      if (show) {
+        webview.evaluateJavascript("turnMeshOn();", null);
+      } else {
+        webview.evaluateJavascript("turnMeshOff();", null);
+      }
     }
   }
 
@@ -369,8 +382,13 @@ public class FaceExtension extends AndroidNonvisibleComponent
       cameraMode = mode;
       if (initialized) {
         boolean frontFacing = mode.equals(FRONT_CAMERA);
-        webview.evaluateJavascript("heightFromJava =" + height + ";", null);
-        webview.evaluateJavascript("widthFromJava =" + width + ";", null);
+        // webview.evaluateJavascript("heightFromJava =" + height + ";", null);
+        // webview.evaluateJavascript("widthFromJava =" + width + ";", null);
+        if (showMesh) {
+          webview.evaluateJavascript("turnMeshOn();", null);
+        } else {
+          webview.evaluateJavascript("turnMeshOff();", null);
+        }
         webview.evaluateJavascript("setCameraFacingMode(" + frontFacing + ");", null);
       }
     } else {
