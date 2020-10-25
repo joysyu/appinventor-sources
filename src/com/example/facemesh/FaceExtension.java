@@ -204,6 +204,9 @@ public class FaceExtension extends AndroidNonvisibleComponent
   @SimpleProperty
   public void Width(int w) {
     width = w;
+    // if (initialized) {
+    //   webview.evaluateJavascript("widthFromJava =" + w + ";");
+    // }
   }
 
   @SimpleProperty
@@ -215,6 +218,9 @@ public class FaceExtension extends AndroidNonvisibleComponent
   @SimpleProperty
   public void Height(int h) {
     height = h;
+    // if (initialized) {
+    //   webview.evaluateJavascript("heightFromJava =" + h + ";");
+    // }
   }
 
   @SimpleProperty
@@ -319,6 +325,8 @@ public class FaceExtension extends AndroidNonvisibleComponent
     this.enabled = enabled;
     if (initialized) {
       assertWebView("Enabled");
+      webview.evaluateJavascript("heightFromJava =" + height + ";", null);
+      webview.evaluateJavascript("widthFromJava =" + width + ";", null);
       webview.evaluateJavascript(enabled ? "startVideo();" : "stopVideo();", null);
     }
   }
@@ -361,6 +369,8 @@ public class FaceExtension extends AndroidNonvisibleComponent
       cameraMode = mode;
       if (initialized) {
         boolean frontFacing = mode.equals(FRONT_CAMERA);
+        webview.evaluateJavascript("heightFromJava =" + height + ";", null);
+        webview.evaluateJavascript("widthFromJava =" + width + ";", null);
         webview.evaluateJavascript("setCameraFacingMode(" + frontFacing + ");", null);
       }
     } else {
@@ -442,6 +452,16 @@ public class FaceExtension extends AndroidNonvisibleComponent
           }
         });
       }
+    }
+
+    @JavascriptInterface
+    public String reportWidth() {
+      return String.valueOf(width);
+    }
+
+    @JavascriptInterface
+    public String reportHeight() {
+      return String.valueOf(height);
     }
 
   private static final int y_offset = -20;

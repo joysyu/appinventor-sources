@@ -10,6 +10,8 @@ const ERROR_WEBVIEW_NO_MEDIA = 400;
 const ERROR_MODEL_LOAD = 401;
 var videoWidth = 300;
 var videoHeight = 250;
+var widthFromJava = 0;
+var heightFromJava = 0;
 
 const ERRORS = {
   400: "WebView does not support navigator.mediaDevices",
@@ -51,6 +53,14 @@ async function loadVideo() {
 }
 
 let stop = false;
+
+function setVideoWidth(width) {
+  widthFromJava = width;
+}
+
+function setVideoHeight(height) {
+  heightFromJava = height;
+}
 
 function runClassifier(video, net) {
   const canvas = document.getElementById('output');
@@ -135,6 +145,42 @@ function runClassifier(video, net) {
                       };
 
       FaceExtension.reportResult(JSON.stringify(newObj));
+
+      // var xSmallest = 555;
+      // var ySmallest = 555;
+      // var xLargest = -555;
+      // var yLargest = -555;
+
+      for (let i = 0; i < predictions[0].scaledMesh.length; i++) {
+        ctx.font = "5pt Calibri";
+        // works for 300 by 300 perfectly
+        // var currX = (predictions[0].scaledMesh[i][0] + 485.0) / 480.0 * widthFromJava;
+        // var currY = (predictions[0].scaledMesh[i][1] - 20.0) / 620.0 * heightFromJava;
+
+
+        var currX = (predictions[0].scaledMesh[i][0] + 470.0) / 480.0 * videoWidth;
+        var currY = (predictions[0].scaledMesh[i][1] - 5.0) / 620.0 * videoHeight;
+        ctx.fillText(i.toString(), currX, currY);
+        // if (predictions[0].scaledMesh[i][0] < xSmallest){
+        //   xSmallest = predictions[0].scaledMesh[i][0];
+        // } else if (predictions[0].scaledMesh[i][0] > xLargest) {
+        //   xLargest = predictions[0].scaledMesh[i][0]
+        // }
+        // if (predictions[0].scaledMesh[i][1] < ySmallest){
+        //   ySmallest = predictions[0].scaledMesh[i][1];
+        // } else if (predictions[0].scaledMesh[i][1] > yLargest) {
+        //   yLargest = predictions[0].scaledMesh[i][1]
+        // }
+
+        ctx.save();
+      }
+
+      ctx.fillText(widthFromJava, 10, 10);
+      ctx.fillText(heightFromJava, 10, 20);
+      // ctx.fillText("xLargest: " + xLargest.toString(), 10, 30);
+      // ctx.fillText("yLargest: " + yLargest.toString(), 10, 40);
+      // ctx.save();
+
     }
 
     const dataURL = canvas.toDataURL();
@@ -209,30 +255,3 @@ loadModel().then(model => {
   FaceExtension.ready();
 });
 
-    // [
-    //   {
-    //     faceInViewConfidence: 1, // The probability of a face being present.
-    //     boundingBox: { // The bounding box surrounding the face.
-    //       topLeft: [232.28, 145.26],
-    //       bottomRight: [449.75, 308.36],
-    //     },
-    //     mesh: [ // The 3D coordinates of each facial landmark.
-    //       [92.07, 119.49, -17.54],
-    //       [91.97, 102.52, -30.54],
-    //       ...
-    //     ],
-    //     scaledMesh: [ // The 3D coordinates of each facial landmark, normalized.
-    //       [322.32, 297.58, -17.54],
-    //       [322.18, 263.95, -30.54]
-    //     ],
-    //     annotations: { // Semantic groupings of the `scaledMesh` coordinates.
-    //       silhouette: [
-    //         [326.19, 124.72, -3.82],
-    //         [351.06, 126.30, -3.00],
-    //         ...
-    //       ],
-    //       ...
-    //     }
-    //   }
-    // ]
-    // */
