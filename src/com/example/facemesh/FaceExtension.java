@@ -78,8 +78,8 @@ public class FaceExtension extends AndroidNonvisibleComponent
   private boolean initialized = false;
   private boolean enabled = true;
   private String BackgroundImage = "";
-  private int width = 300;
-  private int height = 250; 
+  private int width = 350;
+  private int height = 200; 
 
   /**
    * Creates a new FaceExtension extension.
@@ -102,7 +102,12 @@ public class FaceExtension extends AndroidNonvisibleComponent
     keyPoints.put("leftEyeBottom", YailList.makeEmptyList());
     keyPoints.put("rightEyeTop", YailList.makeEmptyList());
     keyPoints.put("rightEyeBottom", YailList.makeEmptyList());
-
+    keyPoints.put("rightEarStart", YailList.makeEmptyList());
+    keyPoints.put("leftEarStart", YailList.makeEmptyList());
+    keyPoints.put("rightEarEnd", YailList.makeEmptyList());
+    keyPoints.put("leftEarEnd", YailList.makeEmptyList());
+    keyPoints.put("rightNoseTop", YailList.makeEmptyList());
+    keyPoints.put("leftNoseTop", YailList.makeEmptyList());
     Log.d(LOG_TAG, "Created FaceExtension extension");
   }
 
@@ -277,6 +282,32 @@ public class FaceExtension extends AndroidNonvisibleComponent
     return keyPoints.get("rightEyeBottom");
   }
 
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList RightEarStart() {
+    return keyPoints.get("rightEarStart");
+  }
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList LeftEarStart() {
+    return keyPoints.get("leftEarStart");
+  }
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList RightEarEnd() {
+    return keyPoints.get("rightEarEnd");
+  }
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList LeftEarEnd() {
+    return keyPoints.get("leftEarEnd");
+  }
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList RightNoseTop() {
+    return keyPoints.get("rightNoseTop");
+  }
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList LeftNoseTop() {
+    return keyPoints.get("leftNoseTop");
+  }
+
+
   @SimpleProperty(description = "Background Image.")
   public String BackgroundImage() {
     return BackgroundImage;
@@ -414,8 +445,10 @@ public class FaceExtension extends AndroidNonvisibleComponent
     }
 
   private static final int y_offset = -20;
-  private static final double y_multiplier = 1/620.0;
-  private static final double x_multiplier = 1/480.0;
+  private static final double y_multiplier = 1.0/620.0;
+  private static final double x_multiplier = 1.0/480.0;
+  private static final double x_offset = 180.0;
+  private static final double x_range = 480.0;
 
 
     @JavascriptInterface 
@@ -424,53 +457,77 @@ public class FaceExtension extends AndroidNonvisibleComponent
         // final Object parsedResult = JsonUtil.getObjectFromJson(result, true);
         JSONObject res = new JSONObject(result);
         JSONObject forehead = res.getJSONObject("forehead");
-        YailList foreHeadList = YailList.makeList(new Double[]{forehead.getDouble("x") * width/480.0, (forehead.getDouble("y") - 20) * height / 620.0, forehead.getDouble("z")});
+        YailList foreHeadList = YailList.makeList(new Double[]{forehead.getDouble("x") * width * x_multiplier, forehead.getDouble("y") * height * y_multiplier, forehead.getDouble("z")});
         keyPoints.put("forehead", foreHeadList);
 
         JSONObject chin = res.getJSONObject("chin");
-        YailList chinList = YailList.makeList(new Double[]{chin.getDouble("x") * width/480.0, (chin.getDouble("y") - 20) * height / 620.0, chin.getDouble("z")});
+        YailList chinList = YailList.makeList(new Double[]{chin.getDouble("x") * width * x_multiplier, chin.getDouble("y") * height * y_multiplier, chin.getDouble("z")});
         keyPoints.put("chin", chinList); 
 
         JSONObject leftCheek = res.getJSONObject("leftCheek");
-        YailList leftCheekList = YailList.makeList(new Double[]{leftCheek.getDouble("x") * width/480.0, (leftCheek.getDouble("y") - 20) * height / 620.0, leftCheek.getDouble("z")});
+        YailList leftCheekList = YailList.makeList(new Double[]{leftCheek.getDouble("x") * width *  x_multiplier, leftCheek.getDouble("y") * height * y_multiplier, leftCheek.getDouble("z")});
         keyPoints.put("leftCheek", leftCheekList);
 
         JSONObject rightCheek = res.getJSONObject("rightCheek");
-        YailList rightCheekList = YailList.makeList(new Double[]{rightCheek.getDouble("x") * width/480.0, (rightCheek.getDouble("y") - 20) * height / 620.0, rightCheek.getDouble("z")});
+        YailList rightCheekList = YailList.makeList(new Double[]{rightCheek.getDouble("x") * width * x_multiplier, rightCheek.getDouble("y") * height * y_multiplier, rightCheek.getDouble("z")});
         keyPoints.put("rightCheek", rightCheekList);
 
         JSONObject leftEyeInnerCorner = res.getJSONObject("leftEyeInnerCorner");
-        YailList leftEyeInnerCornerList = YailList.makeList(new Double[]{leftEyeInnerCorner.getDouble("x") * width/480.0, (leftEyeInnerCorner.getDouble("y") - 20) * height / 620.0, leftEyeInnerCorner.getDouble("z")});
+        YailList leftEyeInnerCornerList = YailList.makeList(new Double[]{leftEyeInnerCorner.getDouble("x") * width * x_multiplier, leftEyeInnerCorner.getDouble("y") * height * y_multiplier, leftEyeInnerCorner.getDouble("z")});
         keyPoints.put("leftEyeInnerCorner", leftEyeInnerCornerList);
 
 
         JSONObject rightEyeInnerCorner = res.getJSONObject("rightEyeInnerCorner");
-        YailList rightEyeInnerCornerList = YailList.makeList(new Double[]{rightEyeInnerCorner.getDouble("x") * width/480.0, (rightEyeInnerCorner.getDouble("y") - 20) * height / 620.0, rightEyeInnerCorner.getDouble("z")});
+        YailList rightEyeInnerCornerList = YailList.makeList(new Double[]{rightEyeInnerCorner.getDouble("x") * width * x_multiplier, rightEyeInnerCorner.getDouble("y") * height * y_multiplier, rightEyeInnerCorner.getDouble("z")});
         keyPoints.put("rightEyeInnerCorner", rightEyeInnerCornerList);
 
         JSONObject mouthTop = res.getJSONObject("mouthTop");
-        YailList mouthTopList = YailList.makeList(new Double[]{mouthTop.getDouble("x") * width/480.0, (mouthTop.getDouble("y") - 20) * height / 620.0, mouthTop.getDouble("z")});
+        YailList mouthTopList = YailList.makeList(new Double[]{mouthTop.getDouble("x") * width * x_multiplier, mouthTop.getDouble("y") * height * y_multiplier, mouthTop.getDouble("z")});
         keyPoints.put("mouthTop", mouthTopList);
 
         JSONObject mouthBottom = res.getJSONObject("mouthBottom");
-        YailList mouthBottomList = YailList.makeList(new Double[]{mouthBottom.getDouble("x") * width/480.0, (mouthBottom.getDouble("y") - 20) * height / 620.0, mouthBottom.getDouble("z")});
+        YailList mouthBottomList = YailList.makeList(new Double[]{mouthBottom.getDouble("x") * width * x_multiplier, mouthBottom.getDouble("y") * height * y_multiplier, mouthBottom.getDouble("z")});
         keyPoints.put("mouthBottom", mouthBottomList);
 
         JSONObject leftEyeTop = res.getJSONObject("leftEyeTop");
-        YailList leftEyeTopList = YailList.makeList(new Double[]{leftEyeTop.getDouble("x") * width/480.0, (leftEyeTop.getDouble("y") - 20) * height / 620.0, leftEyeTop.getDouble("z")});
+        YailList leftEyeTopList = YailList.makeList(new Double[]{leftEyeTop.getDouble("x") * width * x_multiplier, leftEyeTop.getDouble("y") * height * y_multiplier, leftEyeTop.getDouble("z")});
         keyPoints.put("leftEyeTop", leftEyeTopList);
 
         JSONObject leftEyeBottom = res.getJSONObject("leftEyeBottom");
-        YailList leftEyeBottomList = YailList.makeList(new Double[]{leftEyeBottom.getDouble("x") * width/480.0, (leftEyeBottom.getDouble("y") - 20) * height / 620.0, leftEyeBottom.getDouble("z")});
+        YailList leftEyeBottomList = YailList.makeList(new Double[]{leftEyeBottom.getDouble("x") * width * x_multiplier, leftEyeBottom.getDouble("y") * height * y_multiplier, leftEyeBottom.getDouble("z")});
         keyPoints.put("leftEyeBottom", leftEyeBottomList);
 
         JSONObject rightEyeTop = res.getJSONObject("rightEyeTop");
-        YailList rightEyeTopList = YailList.makeList(new Double[]{rightEyeTop.getDouble("x") * width/480.0, (rightEyeTop.getDouble("y") - 20) * height / 620.0, rightEyeTop.getDouble("z")});
+        YailList rightEyeTopList = YailList.makeList(new Double[]{rightEyeTop.getDouble("x") * width * x_multiplier, rightEyeTop.getDouble("y") * height * y_multiplier, rightEyeTop.getDouble("z")});
         keyPoints.put("rightEyeTop", rightEyeTopList);
 
         JSONObject rightEyeBottom = res.getJSONObject("rightEyeBottom");
-        YailList rightEyeBottomList = YailList.makeList(new Double[]{rightEyeBottom.getDouble("x") * width/480.0, (rightEyeBottom.getDouble("y") - 20) * height / 620.0, rightEyeBottom.getDouble("z")});
+        YailList rightEyeBottomList = YailList.makeList(new Double[]{rightEyeBottom.getDouble("x") * width * x_multiplier, rightEyeBottom.getDouble("y") * height * y_multiplier, rightEyeBottom.getDouble("z")});
         keyPoints.put("rightEyeBottom", rightEyeBottomList);
+
+        JSONObject rightEarStart = res.getJSONObject("rightEarStart");
+        YailList rightEarStartList = YailList.makeList(new Double[]{rightEarStart.getDouble("x") * width * x_multiplier, rightEarStart.getDouble("y") * height * y_multiplier, rightEarStart.getDouble("z")});
+        keyPoints.put("rightEarStart", rightEarStartList);
+
+        JSONObject leftEarStart = res.getJSONObject("leftEarStart");
+        YailList leftEarStartList = YailList.makeList(new Double[]{leftEarStart.getDouble("x") * width * x_multiplier, leftEarStart.getDouble("y") * height * y_multiplier, leftEarStart.getDouble("z")});
+        keyPoints.put("leftEarStart", leftEarStartList);
+
+        JSONObject rightEarEnd = res.getJSONObject("rightEarEnd");
+        YailList rightEarEndList = YailList.makeList(new Double[]{rightEarEnd.getDouble("x") * width * x_multiplier, rightEarEnd.getDouble("y") * height * y_multiplier, rightEarEnd.getDouble("z")});
+        keyPoints.put("rightEarEnd", rightEarEndList);
+
+        JSONObject leftEarEnd = res.getJSONObject("leftEarEnd");
+        YailList leftEarEndList = YailList.makeList(new Double[]{leftEarEnd.getDouble("x") * width * x_multiplier, leftEarEnd.getDouble("y") * height * y_multiplier, leftEarEnd.getDouble("z")});
+        keyPoints.put("leftEarEnd", leftEarEndList);
+
+        JSONObject rightNoseTop = res.getJSONObject("rightNoseTop");
+        YailList rightNoseTopList = YailList.makeList(new Double[]{rightNoseTop.getDouble("x") * width * x_multiplier, rightNoseTop.getDouble("y") * height * y_multiplier, rightNoseTop.getDouble("z")});
+        keyPoints.put("rightNoseTop", rightNoseTopList);
+
+        JSONObject leftNoseTop = res.getJSONObject("leftNoseTop");
+        YailList leftNoseTopList = YailList.makeList(new Double[]{leftNoseTop.getDouble("x") * width * x_multiplier, leftNoseTop.getDouble("y") * height * y_multiplier, leftNoseTop.getDouble("z")});
+        keyPoints.put("leftNoseTop", leftNoseTopList);
 
         form.runOnUiThread(new Runnable() {
           @Override
