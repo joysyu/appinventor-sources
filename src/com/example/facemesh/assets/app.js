@@ -51,9 +51,24 @@ async function loadVideo() {
   return video;
 }
 
+async function setUpImage(url) {
+  return new Promise((resolve) => {
+    var image = new Image();
+    image.src = url;
+    image.onload = () => {
+      resolve(image);
+    }
+  });
+}
+
+async function loadImage() {
+  const image = await setUpImage("elephant-nose.png");
+  return image;
+}
+
 let stop = false;
 
-function runClassifier(video, net) {
+function runClassifier(image, video, net) {
   const canvas = document.getElementById('output');
   const ctx = canvas.getContext('2d');
 
@@ -69,25 +84,8 @@ function runClassifier(video, net) {
     ctx.scale(forwardCamera ? -1 : 1, 1);
     ctx.translate(forwardCamera ? -videoWidth : 0, 0);
     ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+    ctx.drawImage(image, 10, 10);
     ctx.restore();
-
-    // FaceExtension.reportImage(dataURL);
-    // if predictions.length > 0 {
-    // FaceExtension.reportResult(JSON.stringify(predictions));
-    // }
-    // if predictions.length > 0 {
-      // for (let i = 0; i < predictions.length; i++) {
-      //   const keypoints = predictions[i].scaledMesh;
-
-      //   // Log facial keypoints.
-      //   for (let i = 0; i < keypoints.length; i++) {
-      //     const [x, y, z] = keypoints[i];
-
-      //     console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
-      //   }
-      // }
-      // FaceExtension.reportResult(JSON.stringify(predictions[0].scaledMesh));
-    // }
 
     if (predictions.length > 0) {
       // for (let i = 0; i < predictions.length; i++) {
@@ -146,14 +144,14 @@ function runClassifier(video, net) {
           ctx.save();
         }
       }
+
       // ctx.fillText(widthFromJava, 10, 10);
       // ctx.fillText(heightFromJava, 10, 20);
-      
+      // var ear = document.getElementById("elephant-left-ear");
     }
 
     const dataURL = canvas.toDataURL();
     FaceExtension.reportImage(dataURL);
-
 
     if (!stop) requestAnimationFrame(classifyFrame);
   }
@@ -180,6 +178,7 @@ async function runModel() {
 
   try {
     video = await loadVideo();
+    image = await loadImage();
   } catch (e) {
     FaceExtension.error(ERROR_WEBVIEW_NO_MEDIA,
       ERRORS[ERROR_WEBVIEW_NO_MEDIA]);
@@ -187,7 +186,7 @@ async function runModel() {
   }
 
   running = true;
-  return runClassifier(video, net);
+  return runClassifier(image, video, net);
 }
 
 function turnMeshOn() {
@@ -230,4 +229,3 @@ loadModel().then(model => {
   net = model;
   FaceExtension.ready();
 });
-
