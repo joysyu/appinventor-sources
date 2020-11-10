@@ -115,8 +115,13 @@ function runClassifier(video, net) {
       const rightNoseTop = predictions[0].scaledMesh[188];
       const leftNoseTop = predictions[0].scaledMesh[412];
 
+      const leftEyebrow = predictions[0].scaledMesh[413];
+      const rightEyebrow = predictions[0].scaledMesh[113];
+
       const newObj = {"leftCheek" : {x: leftCheek[0] + 480, y: leftCheek[1]-20, z: leftCheek[2]},
                       "rightCheek" : {x : rightCheek[0] + 480, y: rightCheek[1]-20, z: rightCheek[2]},
+                      "leftEyebrow" : {x: leftEyebrow[0] + 480, y: leftEyebrow[1]-20, z: leftEyebrow[2]},
+                      "rightEyebrow" : {x : rightEyebrow[0] + 480, y: rightEyebrow[1]-20, z: rightEyebrow[2]},
                       "forehead": {x : forehead[0] + 480, y: forehead[1]-20, z: forehead[2]},
                       "chin": {x : chin[0] + 480, y: chin[1]-20, z: chin[2]},
                       "leftEyeInnerCorner": {x : leftEyeInnerCorner[0]+ 480, y: leftEyeInnerCorner[1]-20, z: leftEyeInnerCorner[2]},

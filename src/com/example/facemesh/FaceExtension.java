@@ -94,6 +94,8 @@ public class FaceExtension extends AndroidNonvisibleComponent
     keyPoints.put("forehead", YailList.makeEmptyList());
     keyPoints.put("leftCheek", YailList.makeEmptyList());
     keyPoints.put("rightCheek", YailList.makeEmptyList());
+    keyPoints.put("leftEyebrow", YailList.makeEmptyList());
+    keyPoints.put("rightEyebrow", YailList.makeEmptyList());
     keyPoints.put("chin", YailList.makeEmptyList());
     keyPoints.put("leftEyeInnerCorner", YailList.makeEmptyList());
     keyPoints.put("rightEyeInnerCorner", YailList.makeEmptyList());
@@ -241,6 +243,16 @@ public class FaceExtension extends AndroidNonvisibleComponent
  @SimpleProperty(description = "Position of right cheek")
   public YailList RightCheek() {
     return keyPoints.get("rightCheek");
+  }
+
+  @SimpleProperty(description = "Position of left cheek")
+  public YailList LeftEyebrow() {
+    return keyPoints.get("leftEyebrow");
+  }
+
+ @SimpleProperty(description = "Position of right cheek")
+  public YailList RightEyebrow() {
+    return keyPoints.get("rightEyebrow");
   }
 
   @SimpleProperty(description = "Position of left eye inner corner")
@@ -509,6 +521,15 @@ public class FaceExtension extends AndroidNonvisibleComponent
         JSONObject rightCheek = res.getJSONObject("rightCheek");
         YailList rightCheekList = YailList.makeList(new Double[]{rightCheek.getDouble("x") * width * x_multiplier, rightCheek.getDouble("y") * height * y_multiplier, rightCheek.getDouble("z")});
         keyPoints.put("rightCheek", rightCheekList);
+
+
+        JSONObject leftEyebrow = res.getJSONObject("leftEyebrow");
+        YailList leftEyebrowList = YailList.makeList(new Double[]{leftEyebrow.getDouble("x") * width *  x_multiplier, leftEyebrow.getDouble("y") * height * y_multiplier, leftEyebrow.getDouble("z")});
+        keyPoints.put("leftEyebrow", leftEyebrowList);
+
+        JSONObject rightEyebrow = res.getJSONObject("rightEyebrow");
+        YailList rightEyebrowList = YailList.makeList(new Double[]{rightEyebrow.getDouble("x") * width * x_multiplier, rightEyebrow.getDouble("y") * height * y_multiplier, rightEyebrow.getDouble("z")});
+        keyPoints.put("rightEyebrow", rightEyebrowList);
 
         JSONObject leftEyeInnerCorner = res.getJSONObject("leftEyeInnerCorner");
         YailList leftEyeInnerCornerList = YailList.makeList(new Double[]{leftEyeInnerCorner.getDouble("x") * width * x_multiplier, leftEyeInnerCorner.getDouble("y") * height * y_multiplier, leftEyeInnerCorner.getDouble("z")});
