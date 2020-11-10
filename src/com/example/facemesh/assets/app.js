@@ -113,8 +113,18 @@ function runClassifier(image, video, net) {
       const rightNoseTop = predictions[0].scaledMesh[188];
       const leftNoseTop = predictions[0].scaledMesh[412];
 
+      const leftEyebrow = predictions[0].scaledMesh[443];
+      const rightEyebrow = predictions[0].scaledMesh[223];
+
+      let allPoints = {};
+      for (let i = 0; i < predictions[0].scaledMesh.length; i++) {
+        allPoints[i.toString()] = {x : predictions[0].scaledMesh[i][0] + 480, y: predictions[0].scaledMesh[i][1] - 20};
+      }
+
       const newObj = {"leftCheek" : {x: leftCheek[0] + 480, y: leftCheek[1]-20, z: leftCheek[2]},
                       "rightCheek" : {x : rightCheek[0] + 480, y: rightCheek[1]-20, z: rightCheek[2]},
+                      "leftEyebrow" : {x: leftEyebrow[0] + 480, y: leftEyebrow[1]-20, z: leftEyebrow[2]},
+                      "rightEyebrow" : {x : rightEyebrow[0] + 480, y: rightEyebrow[1]-20, z: rightEyebrow[2]},
                       "forehead": {x : forehead[0] + 480, y: forehead[1]-20, z: forehead[2]},
                       "chin": {x : chin[0] + 480, y: chin[1]-20, z: chin[2]},
                       "leftEyeInnerCorner": {x : leftEyeInnerCorner[0]+ 480, y: leftEyeInnerCorner[1]-20, z: leftEyeInnerCorner[2]},
@@ -130,7 +140,8 @@ function runClassifier(image, video, net) {
                       "rightEarEnd": {x : rightEarEnd[0]+ 480, y: rightEarEnd[1]-20, z: rightEarEnd[2]},
                       "leftEarEnd": {x : leftEarEnd[0]+ 480, y: leftEarEnd[1]-20, z: leftEarEnd[2]},
                       "rightNoseTop": {x : rightNoseTop[0]+ 480, y: rightNoseTop[1]-20, z: rightNoseTop[2]},
-                      "leftNoseTop": {x : leftNoseTop[0]+ 480, y: leftNoseTop[1]-20, z: leftNoseTop[2]}
+                      "leftNoseTop": {x : leftNoseTop[0]+ 480, y: leftNoseTop[1]-20, z: leftNoseTop[2]},
+                      "allPoints": allPoints
                       };
 
       FaceExtension.reportResult(JSON.stringify(newObj));
