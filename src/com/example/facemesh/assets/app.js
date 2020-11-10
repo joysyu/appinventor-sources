@@ -115,8 +115,8 @@ function runClassifier(video, net) {
       const rightNoseTop = predictions[0].scaledMesh[188];
       const leftNoseTop = predictions[0].scaledMesh[412];
 
-      const leftEyebrow = predictions[0].scaledMesh[413];
-      const rightEyebrow = predictions[0].scaledMesh[113];
+      const leftEyebrow = predictions[0].scaledMesh[443];
+      const rightEyebrow = predictions[0].scaledMesh[223];
 
       let allPoints = {};
       for (let i = 0; i < predictions[0].scaledMesh.length; i++) {

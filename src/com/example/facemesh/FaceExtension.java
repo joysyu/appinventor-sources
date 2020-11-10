@@ -111,6 +111,7 @@ public class FaceExtension extends AndroidNonvisibleComponent
     keyPoints.put("leftEarEnd", YailList.makeEmptyList());
     keyPoints.put("rightNoseTop", YailList.makeEmptyList());
     keyPoints.put("leftNoseTop", YailList.makeEmptyList());
+    keyPoints.put("allPoints", YailList.makeEmptyList());
     Log.d(LOG_TAG, "Created FaceExtension extension");
   }
 
@@ -319,7 +320,10 @@ public class FaceExtension extends AndroidNonvisibleComponent
   public YailList LeftNoseTop() {
     return keyPoints.get("leftNoseTop");
   }
-
+  @SimpleProperty(description = "Position of mouth bottom")
+  public YailList AllPoints() {
+    return keyPoints.get("allPoints");
+  }
 
   @SimpleProperty(description = "Background Image.")
   public String BackgroundImage() {
@@ -587,6 +591,15 @@ public class FaceExtension extends AndroidNonvisibleComponent
         JSONObject leftNoseTop = res.getJSONObject("leftNoseTop");
         YailList leftNoseTopList = YailList.makeList(new Double[]{leftNoseTop.getDouble("x") * width * x_multiplier, leftNoseTop.getDouble("y") * height * y_multiplier, leftNoseTop.getDouble("z")});
         keyPoints.put("leftNoseTop", leftNoseTopList);
+
+        JSONObject allObjects = res.getJSONObject("allPoints");
+        ArrayList<Object> listOfObjects = new ArrayList<Object>();
+        for (int i = 0; i < 450; i++) {
+          JSONObject currObj = allObjects.getJSONObject(String.valueOf(i));
+          YailList currObjList = YailList.makeList(new Double[]{currObj.getDouble("x") * width * x_multiplier, currObj.getDouble("y") * height * y_multiplier});
+          listOfObjects.add(currObjList);
+        }
+        keyPoints.put("allPoints", YailList.makeList(listOfObjects));
 
         form.runOnUiThread(new Runnable() {
           @Override
